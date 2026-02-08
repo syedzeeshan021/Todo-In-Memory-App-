@@ -1,0 +1,64 @@
+# 90-Second Demo Script: Todo In-Memory Python Console App (Advanced Features)
+
+## Setup (0-5s)
+```bash
+# Show the application help
+python -m src.main --help
+```
+
+## Phase 1: Basic CRUD Foundation (5-20s)
+```bash
+# Add a basic task (Basic Level functionality)
+python -m src.main add "Morning standup" "Team sync"
+
+# List tasks to show basic functionality
+python -m src.main list
+
+# Complete the task to demonstrate basic functionality
+python -m src.main complete 1
+```
+
+## Phase 2: Intermediate Feature Layering (20-50s)
+```bash
+# Add a task with priority and tags (Intermediate Level)
+python -m src.main add "Prepare presentation" "Q3 roadmap" --priority high --tag work,urgent
+
+# Add another task with tags
+python -m src.main add "Buy groceries" "Milk, eggs" --tag personal
+
+# List tasks with filters and sorting (Intermediate Level)
+python -m src.main list --priority high --sort title
+
+# Search for a specific task (Intermediate Level)
+python -m src.main search "roadmap" --status pending
+```
+
+## Phase 3: Advanced Feature Integration (50-80s)
+```bash
+# Add a recurring task with due date (Advanced Level)
+python -m src.main add "Weekly planning" "Team sync" --recur weekly --due "2026-02-15T09:00:00"
+
+# Add a task with due date and high priority (Advanced Level)
+python -m src.main add "Pay rent" "Apartment" --due "2026-02-28T23:59:00" --priority high
+
+# Complete the recurring task to generate next occurrence (Advanced Level)
+python -m src.main complete 3
+
+# Show that the recurring task created a new occurrence
+python -m src.main list
+```
+
+## Phase 4: Cross-Feature Synthesis (80-90s)
+```bash
+# Show tasks sorted by due date (combining Advanced features)
+python -m src.main list --sort due_date
+
+# Search for tasks with multiple filters (combining all levels)
+python -m src.main search "planning" --priority high --due-after "2026-02-10"
+```
+
+## Demo Notes
+- The recurring task will generate a new occurrence when completed
+- Tasks with due dates will show reminders when appropriate
+- All basic commands continue to work unchanged
+- Advanced features integrate seamlessly with existing functionality
