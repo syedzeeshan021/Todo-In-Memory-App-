@@ -60,9 +60,11 @@
 - Filters combinable on `list` and `search` commands:
   - `--status [all|pending|completed]` (default: all)
   - `--priority [high|medium|low|all]` (default: all)
-  - `--tag <value>` (partial match allowed within tag strings)
-- Filter logic: AND combination (all filters must match)
+  - `--tag <value>` (partial match allowed within tag strings - substring matching)
+- Filter logic: AND combination across different filter types (all filters must match)
+- Multiple `--tag` flags treated as OR condition (task has one or more of the specified tags)
 - Example: `list --status pending --priority high --tag work` → only pending high-priority work tasks
+- Example: `list --tag work --tag urgent` → tasks with either 'work' OR 'urgent' tag
 
 ### FR-05: Sort Options
 - Command flag: `--sort [created|priority|title]`
@@ -139,24 +141,46 @@ Validation Rules:
 
 ### add <title> <description> [--priority <level>] [--tag <tags>]
 - Priority/tag flags OPTIONAL
+- Arguments with spaces must be enclosed in quotes
+- Flags can be specified as `--flag value` format
 - Example: add "Team sync" "Weekly standup" --priority high --tag work,meeting
 
-### list [--status <filter>] [--priority <filter>] [--tag <value>] [--sort <option>]
+### list [--status <filter>] [--priority <filter>] [--tag <value>]... [--sort <option>]
 - All flags OPTIONAL with sensible defaults
+- Arguments with spaces must be enclosed in quotes
+- Flags can be specified as `--flag value` format
+- Multiple `--tag` flags allowed (OR condition - task has one or more of the specified tags)
 - Example: list --status pending --sort priority
+- Example: list --tag work --tag urgent --status pending
 
-### search <keyword> [--status <filter>] [--priority <filter>] [--tag <value>] [--sort <option>]
+### search <keyword> [--status <filter>] [--priority <filter>] [--tag <value>]... [--sort <option>]
 - Keyword REQUIRED
 - All filter/sort flags OPTIONAL (same as list command)
+- Arguments with spaces must be enclosed in quotes
+- Flags can be specified as `--flag value` format
+- Multiple `--tag` flags allowed (OR condition - task has one or more of the specified tags)
 - Example: search "report" --priority high --sort title
+- Example: search "meeting" --tag work --tag urgent --status pending
 
 ### update <id> <title> <description> [--priority <level>] [--tag <tags>]
 - Priority/tag flags OPTIONAL (omitting preserves existing values)
+- Arguments with spaces must be enclosed in quotes
+- Flags can be specified as `--flag value` format
 - Example: update 3 "Updated title" "New desc" --priority low
 
 ### delete <id>, complete <id>, view <id>
 - NO changes to syntax or behavior from basic level
 - Must continue working identically
+
+## Clarifications
+
+### Session 2026-02-08
+
+- Q: How should the CLI parser handle arguments with spaces or special characters? → A: Arguments with spaces must be enclosed in quotes, flags as `--flag value` format
+- Q: Should all error messages follow a specific format? → A: All error messages should follow the format "[ERROR] Description"
+- Q: Should help be available per command, globally, or both? → A: Help available both per command (e.g., `list --help`) and globally (e.g., `--help`)
+- Q: How should tag filtering work with partial match? → A: Partial match means substring matching within tags (e.g., filter "wor" would match tag "work")
+- Q: How should multiple `--tag` flags be handled? → A: Multiple `--tag` flags treated as OR condition (task has one or more of the specified tags)
 
 ## 6. Edge Cases & Error Handling
 
@@ -187,7 +211,9 @@ Validation Rules:
 
 ### NFR-02: UX Consistency
 - Help text (--help) required for all commands with flags
+- Help available both per command (e.g., `list --help`) and globally (e.g., `--help`)
 - Error messages must be user-friendly and actionable
+- All error messages follow the format "[ERROR] Description"
 - Empty states must display helpful messages ("No tasks found matching your filters")
 
 ### NFR-03: Backward Compatibility
